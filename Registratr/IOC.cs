@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Registratr.Abstractions;
 using System.Reflection;
-
+//main
 namespace Registratr
 {
     public static class IOC
