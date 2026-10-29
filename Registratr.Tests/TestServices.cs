@@ -66,4 +66,59 @@ namespace Registratr.Tests
     public interface IMultiHandler : ITransientService { }
     public class FirstHandler : IMultiHandler { }
     public class SecondHandler : IMultiHandler { }
+
+    // Mismatched Open Generics
+    public interface IValidator<T> : IScopedService { }
+    public class ClosedGenericValidator<T> : IValidator<string> { }
+
+    public interface IPair<T1, T2> : IScopedService { }
+    public class SwappedPair<T1, T2> : IPair<T2, T1> { }
+
+    // Multiple interfaces for instance identity testing
+    public interface IServiceOne { }
+    public interface IServiceTwo { }
+
+    [Singleton]
+    public class MultiInterfaceSingletonService : IServiceOne, IServiceTwo { }
+
+    public interface IScopedOne { }
+    public interface IScopedTwo { }
+
+    [Scoped]
+    public class MultiInterfaceScopedService : IScopedOne, IScopedTwo { }
+
+    // Short attribute aliases
+    public interface IShortSingleton { }
+    [Singleton]
+    public class ShortSingletonService : IShortSingleton { }
+
+    public interface IShortScoped { }
+    [Scoped]
+    public class ShortScopedService : IShortScoped { }
+
+    public interface IShortTransient { }
+    [Transient]
+    public class ShortTransientService : IShortTransient { }
+
+    // Ignored interface with conflicting lifetime attribute
+    [IgnoreRegistration]
+    [Scoped]
+    public interface IIgnoredWithConflictingLifetime { }
+
+    [Singleton]
+    public class ServiceWithIgnoredConflictingInterface : IIgnoredWithConflictingLifetime { }
+
+    // Class with only ignored business interfaces
+    [IgnoreRegistration]
+    public interface IOnlyIgnoredInterface { }
+
+    [Scoped]
+    public class ClassWithOnlyIgnoredInterface : IOnlyIgnoredInterface { }
+
+    // Overridable service for duplicate strategy tests
+    public interface IOverridableService { }
+    public class InitialOverridableService : IOverridableService { }
+
+    [Singleton]
+    public class ReplacementOverridableService : IOverridableService { }
 }
