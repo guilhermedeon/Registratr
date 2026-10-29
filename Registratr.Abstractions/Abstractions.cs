@@ -54,6 +54,33 @@ namespace Registratr.Abstractions
     }
 
     /// <summary>
+    /// Marks a class or interface to be registered with a Singleton lifetime.
+    /// Short alias for <see cref="SingletonServiceAttribute"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
+    public sealed class SingletonAttribute : ServiceLifetimeAttribute
+    {
+    }
+
+    /// <summary>
+    /// Marks a class or interface to be registered with a Scoped lifetime.
+    /// Short alias for <see cref="ScopedServiceAttribute"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
+    public sealed class ScopedAttribute : ServiceLifetimeAttribute
+    {
+    }
+
+    /// <summary>
+    /// Marks a class or interface to be registered with a Transient lifetime.
+    /// Short alias for <see cref="TransientServiceAttribute"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
+    public sealed class TransientAttribute : ServiceLifetimeAttribute
+    {
+    }
+
+    /// <summary>
     /// Marks a class or interface to be ignored by automatic service registration.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
