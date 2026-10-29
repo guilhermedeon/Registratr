@@ -5,13 +5,14 @@ A lightweight, convention-based dependency injection library for .NET 8+. Automa
 ## Features
 
 - **Marker Interfaces**: Register dependencies by implementing `ITransientService`, `IScopedService`, or `ISingletonService`.
-- **Lifetime Attributes**: Tag classes or interfaces with `[TransientService]`, `[ScopedService]`, or `[SingletonService]` without polluting your interface hierarchy.
-- **Open Generics Support**: Automatically maps and registers open generic definitions (e.g., `IRepository<T>` mapped to `Repository<T>`).
+- **Lifetime Attributes**: Tag classes or interfaces with `[Transient]`, `[Scoped]`, `[Singleton]` (or `[TransientService]`, `[ScopedService]`, `[SingletonService]`) without polluting your interface hierarchy.
+- **Open Generics Support**: Automatically maps and registers open generic definitions with matching type parameters (e.g., `IRepository<T>` mapped to `Repository<T>`).
+- **Instance Sharing Across Interfaces**: When a class implements multiple interfaces, interface registrations forward to the concrete type, ensuring the exact same singleton or scoped instance is resolved.
 - **Clean Interface Resolution**: Automatically extracts implemented business interfaces across assemblies while filtering out system interfaces (`IDisposable`, `IAsyncDisposable`, `IComparable`, etc.).
-- **Safe Assembly Scanning**: Handles `ReflectionTypeLoadException` safely and ignores abstract or static classes.
-- **Ignore Attribute**: Exclude specific classes or interfaces from auto-registration using `[IgnoreRegistration]`.
+- **Safe Assembly Scanning**: Handles `ReflectionTypeLoadException`, `TypeLoadException`, and missing assemblies safely, and ignores abstract or static classes.
+- **Ignore Attribute**: Exclude specific classes or interfaces from auto-registration using `[IgnoreRegistration]`. Ignored interfaces do not cause false lifetime conflicts.
 - **Conflict Prevention**: Detects conflicting lifetime declarations early with clear exceptions.
-- **Flexible Options**: Configure duplicate handling (`Append` or `TryAdd`), registering as self (`RegisterAsSelf`), and custom type filters (`TypeFilter`).
+- **Flexible Options**: Configure duplicate handling (`Append`, `TryAdd` / `SkipIfDuplicate`, or `Overwrite`), registering as self (`RegisterAsSelf`), and custom type filters (`TypeFilter`).
 
 ---
 
@@ -44,18 +45,18 @@ public class MemoryCacheService : ISingletonService
 
 ### 2. Lifetime Attributes
 
-Alternatively, use attributes on classes or interfaces:
+Alternatively, use short or full attributes on classes or interfaces:
 
 ```csharp
 using Registratr.Abstractions;
 
-[ScopedService]
+[Scoped]
 public class CustomerService : ICustomerService
 {
     // ...
 }
 
-[SingletonService]
+[Singleton]
 public interface IApplicationConfig
 {
     // ...
@@ -77,22 +78,25 @@ public class Repository<T> : IRepository<T> { }
 
 ### 4. Registration in `Program.cs`
 
-Register services using assemblies or marker types:
+Register services automatically from the calling assembly, specific assemblies, or marker types:
 
 ```csharp
 using Registratr;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register by marker type:
+// Register calling assembly with defaults:
+builder.Services.AddRegistratr();
+
+// Or register by marker type:
 builder.Services.AddRegistratr(typeof(Program));
 
 // Or register by assembly with options:
 builder.Services.AddRegistratr(
-    new[] { typeof(Program).Assembly },
+    typeof(Program).Assembly,
     options =>
     {
-        options.DuplicateStrategy = DuplicateStrategy.TryAdd;
+        options.DuplicateStrategy = DuplicateStrategy.Overwrite; // Or DuplicateStrategy.SkipIfDuplicate / TryAdd
         options.RegisterAsSelf = true;
         options.TypeFilter = type => type.Namespace?.StartsWith("MyApp.Services") == true;
     });
@@ -104,7 +108,8 @@ builder.Services.AddRegistratr(
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `DuplicateStrategy` | `DuplicateStrategy` | `Append` | `Append` (standard `IServiceCollection` behavior) or `TryAdd` (skips if already registered). |
-| `RegisterAsSelf` | `bool` | `false` | When `true`, concrete classes that implement interfaces are registered as both the interface and the concrete type. |
+| `DuplicateStrategy` | `DuplicateStrategy` | `Append` | `Append` (standard behavior), `TryAdd` / `SkipIfDuplicate` (skips if registered), or `Overwrite` (replaces existing). |
+| `RegisterAsSelf` | `bool` | `false` | When `true`, concrete classes that implement interfaces are registered as both the interface and the concrete type, sharing the same instance. |
 | `IncludeOpenGenerics` | `bool` | `true` | When `true`, open generic definitions (e.g. `Repository<>`) are automatically discovered and registered. |
 | `TypeFilter` | `Func<Type, bool>?` | `null` | Optional predicate to filter types discovered during assembly scanning. |
+
