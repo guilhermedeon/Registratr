@@ -24,25 +24,99 @@ namespace Registratr
         };
 
         /// <summary>
+        /// Automatically registers services from the calling assembly into <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddCustomConfiguredServices(this IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            return services.AddCustomConfiguredServices(new[] { Assembly.GetCallingAssembly() }, (Action<RegistrationOptions>?)null);
+        }
+
+        /// <summary>
+        /// Automatically registers services from the calling assembly into <see cref="IServiceCollection"/> with custom options.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddCustomConfiguredServices(
+            this IServiceCollection services,
+            Action<RegistrationOptions>? configure)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            return services.AddCustomConfiguredServices(new[] { Assembly.GetCallingAssembly() }, configure);
+        }
+
+        /// <summary>
+        /// Automatically registers services from the specified assembly into <see cref="IServiceCollection"/> with optional custom options.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assembly">The assembly to scan for services.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddCustomConfiguredServices(
+            this IServiceCollection services,
+            Assembly assembly,
+            Action<RegistrationOptions>? configure = null)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            var assemblies = assembly != null ? new[] { assembly } : Enumerable.Empty<Assembly>();
+            return services.AddCustomConfiguredServices(assemblies, configure);
+        }
+
+        /// <summary>
         /// Automatically registers services from the specified list of assemblies into <see cref="IServiceCollection"/>.
         /// Preserved for backward compatibility.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assemblies">The list of assemblies to scan.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddCustomConfiguredServices(this IServiceCollection services, List<Assembly> assemblies)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices((IEnumerable<Assembly>)assemblies);
         }
 
         /// <summary>
         /// Automatically registers services from the specified assemblies into <see cref="IServiceCollection"/>.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assemblies">The assemblies to scan for services.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddCustomConfiguredServices(this IServiceCollection services, params Assembly[] assemblies)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices((IEnumerable<Assembly>)assemblies);
         }
 
         /// <summary>
         /// Automatically registers services from the specified assemblies into <see cref="IServiceCollection"/> with custom options.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assemblies">The assemblies to scan for services.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddCustomConfiguredServices(
             this IServiceCollection services,
             IEnumerable<Assembly>? assemblies,
@@ -74,19 +148,36 @@ namespace Registratr
         /// <summary>
         /// Automatically registers services from the assemblies containing the specified marker types.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="markerTypes">Marker types whose containing assemblies should be scanned.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddCustomConfiguredServices(this IServiceCollection services, params Type[] markerTypes)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices(null, markerTypes);
         }
 
         /// <summary>
         /// Automatically registers services from the assemblies containing the specified marker types with custom options.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <param name="markerTypes">Marker types whose containing assemblies should be scanned.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddCustomConfiguredServices(
             this IServiceCollection services,
             Action<RegistrationOptions>? configure,
             params Type[] markerTypes)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             if (markerTypes == null || markerTypes.Length == 0)
             {
                 return services;
@@ -97,40 +188,128 @@ namespace Registratr
         }
 
         /// <summary>
+        /// Automatically registers services from the calling assembly into <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddRegistratr(this IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            return services.AddCustomConfiguredServices(new[] { Assembly.GetCallingAssembly() }, (Action<RegistrationOptions>?)null);
+        }
+
+        /// <summary>
+        /// Automatically registers services from the calling assembly into <see cref="IServiceCollection"/> with custom options.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddRegistratr(
+            this IServiceCollection services,
+            Action<RegistrationOptions>? configure)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            return services.AddCustomConfiguredServices(new[] { Assembly.GetCallingAssembly() }, configure);
+        }
+
+        /// <summary>
+        /// Automatically registers services from the specified assembly into <see cref="IServiceCollection"/> with optional custom options.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assembly">The assembly to scan for services.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddRegistratr(
+            this IServiceCollection services,
+            Assembly assembly,
+            Action<RegistrationOptions>? configure = null)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            var assemblies = assembly != null ? new[] { assembly } : Enumerable.Empty<Assembly>();
+            return services.AddCustomConfiguredServices(assemblies, configure);
+        }
+
+        /// <summary>
         /// Semantic alias for <see cref="AddCustomConfiguredServices(IServiceCollection, Assembly[])"/>.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assemblies">The assemblies to scan for services.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddRegistratr(this IServiceCollection services, params Assembly[] assemblies)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices(assemblies);
         }
 
         /// <summary>
         /// Semantic alias for <see cref="AddCustomConfiguredServices(IServiceCollection, IEnumerable{Assembly}, Action{RegistrationOptions}?)"/>.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="assemblies">The assemblies to scan for services.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddRegistratr(
             this IServiceCollection services,
             IEnumerable<Assembly>? assemblies,
             Action<RegistrationOptions>? configure = null)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices(assemblies, configure);
         }
 
         /// <summary>
         /// Semantic alias for <see cref="AddCustomConfiguredServices(IServiceCollection, Type[])"/>.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="markerTypes">Marker types whose containing assemblies should be scanned.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddRegistratr(this IServiceCollection services, params Type[] markerTypes)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices(markerTypes);
         }
 
         /// <summary>
         /// Semantic alias for <see cref="AddCustomConfiguredServices(IServiceCollection, Action{RegistrationOptions}?, Type[])"/>.
         /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="configure">Optional action to configure registration options.</param>
+        /// <param name="markerTypes">Marker types whose containing assemblies should be scanned.</param>
+        /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddRegistratr(
             this IServiceCollection services,
             Action<RegistrationOptions>? configure,
             params Type[] markerTypes)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             return services.AddCustomConfiguredServices(configure, markerTypes);
         }
 
@@ -140,18 +319,30 @@ namespace Registratr
 
             foreach (var type in types)
             {
-                if (!IsValidCandidate(type, options))
+                try
                 {
+                    if (!IsValidCandidate(type, options))
+                    {
+                        continue;
+                    }
+
+                    var lifetime = DetermineLifetime(type);
+                    if (lifetime == null)
+                    {
+                        continue;
+                    }
+
+                    RegisterType(services, type, lifetime.Value, options);
+                }
+                catch (InvalidOperationException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    // Gracefully skip types that fail reflection evaluation (e.g. TypeLoadException, FileNotFoundException)
                     continue;
                 }
-
-                var lifetime = DetermineLifetime(type);
-                if (lifetime == null)
-                {
-                    continue;
-                }
-
-                RegisterType(services, type, lifetime.Value, options);
             }
         }
 
@@ -184,10 +375,11 @@ namespace Registratr
                 {
                     if (iface.IsGenericType)
                     {
-                        var openIface = iface.GetGenericTypeDefinition();
-                        if (openIface.GetGenericArguments().Length == implementationType.GetGenericArguments().Length)
+                        var ifaceArgs = iface.GetGenericArguments();
+                        var implArgs = implementationType.GetGenericArguments();
+                        if (ifaceArgs.Length == implArgs.Length && ifaceArgs.SequenceEqual(implArgs))
                         {
-                            eligibleInterfaces.Add(openIface);
+                            eligibleInterfaces.Add(iface.GetGenericTypeDefinition());
                         }
                     }
                 }
@@ -200,18 +392,44 @@ namespace Registratr
             var distinctInterfaces = eligibleInterfaces.Distinct().ToList();
             if (distinctInterfaces.Count == 0)
             {
-                // All business interfaces were marked with [IgnoreRegistration]; do not auto-register.
+                // All business interfaces were marked with [IgnoreRegistration] or incompatible open generic definitions.
+                if (options.RegisterAsSelf)
+                {
+                    AddDescriptor(services, implementationType, implementationType, lifetime, options.DuplicateStrategy);
+                }
                 return;
             }
 
-            foreach (var iface in distinctInterfaces)
+            if (isGenericDefinition)
             {
-                AddDescriptor(services, iface, implementationType, lifetime, options.DuplicateStrategy);
-            }
+                foreach (var iface in distinctInterfaces)
+                {
+                    AddDescriptor(services, iface, implementationType, lifetime, options.DuplicateStrategy);
+                }
 
-            if (options.RegisterAsSelf)
+                if (options.RegisterAsSelf)
+                {
+                    AddDescriptor(services, implementationType, implementationType, lifetime, options.DuplicateStrategy);
+                }
+            }
+            else
             {
-                AddDescriptor(services, implementationType, implementationType, lifetime, options.DuplicateStrategy);
+                if (distinctInterfaces.Count > 1 || options.RegisterAsSelf)
+                {
+                    // Register concrete implementation directly
+                    AddDescriptor(services, implementationType, implementationType, lifetime, options.DuplicateStrategy);
+
+                    // Forward each interface to the concrete registration so that all interfaces share the same instance
+                    foreach (var iface in distinctInterfaces)
+                    {
+                        AddFactoryDescriptor(services, iface, implementationType, lifetime, options.DuplicateStrategy);
+                    }
+                }
+                else
+                {
+                    // Exactly one interface and RegisterAsSelf is false
+                    AddDescriptor(services, distinctInterfaces[0], implementationType, lifetime, options.DuplicateStrategy);
+                }
             }
         }
 
@@ -223,9 +441,35 @@ namespace Registratr
             DuplicateStrategy strategy)
         {
             var descriptor = new ServiceDescriptor(serviceType, implementationType, lifetime);
-            if (strategy == DuplicateStrategy.TryAdd)
+            AddDescriptor(services, descriptor, strategy);
+        }
+
+        private static void AddFactoryDescriptor(
+            IServiceCollection services,
+            Type serviceType,
+            Type implementationType,
+            ServiceLifetime lifetime,
+            DuplicateStrategy strategy)
+        {
+            var descriptor = ServiceDescriptor.Describe(
+                serviceType,
+                sp => sp.GetRequiredService(implementationType),
+                lifetime);
+            AddDescriptor(services, descriptor, strategy);
+        }
+
+        private static void AddDescriptor(
+            IServiceCollection services,
+            ServiceDescriptor descriptor,
+            DuplicateStrategy strategy)
+        {
+            if (strategy == DuplicateStrategy.TryAdd || strategy == DuplicateStrategy.SkipIfDuplicate)
             {
                 services.TryAdd(descriptor);
+            }
+            else if (strategy == DuplicateStrategy.Overwrite)
+            {
+                services.Replace(descriptor);
             }
             else
             {
@@ -269,56 +513,70 @@ namespace Registratr
             var lifetimes = new HashSet<ServiceLifetime>();
 
             // 1. Marker interfaces
-            if (typeof(ISingletonService).IsAssignableFrom(type))
+            if (typeof(ISingletonService).IsAssignableFrom(type) && !IsOnlyFromIgnoredInterfaces(type, typeof(ISingletonService)))
             {
                 lifetimes.Add(ServiceLifetime.Singleton);
             }
 
-            if (typeof(IScopedService).IsAssignableFrom(type))
+            if (typeof(IScopedService).IsAssignableFrom(type) && !IsOnlyFromIgnoredInterfaces(type, typeof(IScopedService)))
             {
                 lifetimes.Add(ServiceLifetime.Scoped);
             }
 
-            if (typeof(ITransientService).IsAssignableFrom(type))
+            if (typeof(ITransientService).IsAssignableFrom(type) && !IsOnlyFromIgnoredInterfaces(type, typeof(ITransientService)))
             {
                 lifetimes.Add(ServiceLifetime.Transient);
             }
 
             // 2. Attributes on the class itself
-            if (type.GetCustomAttribute<SingletonServiceAttribute>() != null)
+            if (type.GetCustomAttribute<SingletonServiceAttribute>() != null ||
+                type.GetCustomAttribute<SingletonAttribute>() != null)
             {
                 lifetimes.Add(ServiceLifetime.Singleton);
             }
 
-            if (type.GetCustomAttribute<ScopedServiceAttribute>() != null)
+            if (type.GetCustomAttribute<ScopedServiceAttribute>() != null ||
+                type.GetCustomAttribute<ScopedAttribute>() != null)
             {
                 lifetimes.Add(ServiceLifetime.Scoped);
             }
 
-            if (type.GetCustomAttribute<TransientServiceAttribute>() != null)
+            if (type.GetCustomAttribute<TransientServiceAttribute>() != null ||
+                type.GetCustomAttribute<TransientAttribute>() != null)
             {
                 lifetimes.Add(ServiceLifetime.Transient);
             }
 
-            // 3. Attributes on implemented interfaces
+            // 3. Attributes on implemented interfaces (skipping ignored interfaces)
             foreach (var iface in type.GetInterfaces())
             {
+                if (IsIgnoredInterface(iface))
+                {
+                    continue;
+                }
+
                 var ifaceDef = iface.IsGenericType ? iface.GetGenericTypeDefinition() : iface;
 
                 if (iface.GetCustomAttribute<SingletonServiceAttribute>() != null ||
-                    ifaceDef.GetCustomAttribute<SingletonServiceAttribute>() != null)
+                    ifaceDef.GetCustomAttribute<SingletonServiceAttribute>() != null ||
+                    iface.GetCustomAttribute<SingletonAttribute>() != null ||
+                    ifaceDef.GetCustomAttribute<SingletonAttribute>() != null)
                 {
                     lifetimes.Add(ServiceLifetime.Singleton);
                 }
 
                 if (iface.GetCustomAttribute<ScopedServiceAttribute>() != null ||
-                    ifaceDef.GetCustomAttribute<ScopedServiceAttribute>() != null)
+                    ifaceDef.GetCustomAttribute<ScopedServiceAttribute>() != null ||
+                    iface.GetCustomAttribute<ScopedAttribute>() != null ||
+                    ifaceDef.GetCustomAttribute<ScopedAttribute>() != null)
                 {
                     lifetimes.Add(ServiceLifetime.Scoped);
                 }
 
                 if (iface.GetCustomAttribute<TransientServiceAttribute>() != null ||
-                    ifaceDef.GetCustomAttribute<TransientServiceAttribute>() != null)
+                    ifaceDef.GetCustomAttribute<TransientServiceAttribute>() != null ||
+                    iface.GetCustomAttribute<TransientAttribute>() != null ||
+                    ifaceDef.GetCustomAttribute<TransientAttribute>() != null)
                 {
                     lifetimes.Add(ServiceLifetime.Transient);
                 }
@@ -331,6 +589,15 @@ namespace Registratr
             }
 
             return lifetimes.Count == 1 ? lifetimes.First() : null;
+        }
+
+        private static bool IsOnlyFromIgnoredInterfaces(Type type, Type markerType)
+        {
+            var interfacesWithMarker = type.GetInterfaces()
+                .Where(i => i != markerType && markerType.IsAssignableFrom(i))
+                .ToList();
+
+            return interfacesWithMarker.Count > 0 && interfacesWithMarker.All(IsIgnoredInterface);
         }
 
         private static bool IsSystemOrMarkerInterface(Type iface)

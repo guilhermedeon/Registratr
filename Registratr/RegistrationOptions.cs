@@ -13,7 +13,17 @@ namespace Registratr
         /// <summary>
         /// Only adds the service descriptor if the service type has not already been registered.
         /// </summary>
-        TryAdd
+        TryAdd,
+
+        /// <summary>
+        /// Alias for <see cref="TryAdd"/>. Only adds the service descriptor if the service type has not already been registered.
+        /// </summary>
+        SkipIfDuplicate = TryAdd,
+
+        /// <summary>
+        /// Replaces any existing registration for the service type with the new descriptor.
+        /// </summary>
+        Overwrite
     }
 
     /// <summary>
